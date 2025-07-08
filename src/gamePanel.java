@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLOutput;
 import javax.swing.*;
 
 public class gamePanel extends JPanel implements ActionListener {
@@ -9,16 +8,18 @@ public class gamePanel extends JPanel implements ActionListener {
     static final int GRID_SIZE = 25;
     static final int WINDOW_HEIGHT = Y_GRID*GRID_SIZE;
     static final int WINDOW_WIDTH = X_GRID*GRID_SIZE;
-    static int DELAY = 250;
+    int DELAY = 250;
+    static int FORCE_DOWN_DELAY = 50;
 
-    Timer timer;
+    static Timer timer;
     int[][] newPart;
     static int[][] map = new int[X_GRID][Y_GRID];
 
     boolean isRunning;
-    boolean isCollided;
     static boolean moveTick;
 
+
+    // Constructor
     gamePanel(){
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setBackground(Color.black);
@@ -29,11 +30,15 @@ public class gamePanel extends JPanel implements ActionListener {
         newPart();
     }
 
+
+    // Initializes the timer that controls the game
     public void initGame(){
         timer = new Timer(DELAY, this);
         timer.start();
     }
 
+
+    //Makes a new block and places it
     public void newPart() {
         int[][] part = {
                 {1, 0, 0},
@@ -47,11 +52,11 @@ public class gamePanel extends JPanel implements ActionListener {
                 }
             }
         }
-//        newPart = part;
+        timer.setDelay(DELAY);
     }
 
 
-    //Turn all the curent movable parts into unmovable
+    //Turn all the current movable parts into unmovable
     public void turnMovingPart() {
         for (int x = 0; x < map.length; x++){
             for (int y = 0; y< map[0].length; y++){
@@ -67,10 +72,10 @@ public class gamePanel extends JPanel implements ActionListener {
     // Checks if there is anything under each part
     public void collisionCheck() {
         for (int y = map[0].length; y >= 0; y--){
-            for (int x = 0; x < map.length; x++){
-                if (y+1 < map[0].length){
-                    if (map[x][y] == 2) {
-                        if (map[x][y+1] == 1) {
+            for (int[] ints : map) {
+                if (y + 1 < map[0].length) {
+                    if (ints[y] == 2) {
+                        if (ints[y + 1] == 1) {
                             turnMovingPart();
                             break;
                         }
@@ -80,6 +85,8 @@ public class gamePanel extends JPanel implements ActionListener {
         }
     }
 
+
+    // Moves the block down if possible, otherwise creates a new one
     public void movePart() {
         for (int y = map[0].length; y >= 0; y--) {
             for (int x = 0; x < map.length; x++) {
@@ -102,7 +109,9 @@ public class gamePanel extends JPanel implements ActionListener {
         }
     }
 
-    public static void turnPart(char d){
+
+    // Moves each piece either left or right
+    public static void moveHorizontal(char d){
         if (d == 'r') {
             for (int y = map[0].length - 1; y >= 0; y--) {
                 for (int x = map.length - 1; x >= 0; x--) {
@@ -138,11 +147,20 @@ public class gamePanel extends JPanel implements ActionListener {
         }
     }
 
+
+    // forces down all blocks to the highest point
+    static public void forceDown(){
+        timer.setDelay(FORCE_DOWN_DELAY);
+    }
+
+
+    // handles rendering
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         draw(g);
     }
 
+    // drawing assigment
     public void draw(Graphics g){
         for (int x = 0; x < X_GRID; x++) {
         g.drawLine(x*GRID_SIZE, 0, x*GRID_SIZE, WINDOW_HEIGHT);
@@ -174,6 +192,7 @@ public class gamePanel extends JPanel implements ActionListener {
         }
     }
 
+    //Game logic, overrides the default actionPerformed
     @Override
     public void actionPerformed(ActionEvent e){
         if(isRunning) {
@@ -184,21 +203,24 @@ public class gamePanel extends JPanel implements ActionListener {
         repaint();
     }
 
+
+    // Adds the key listener
     public static class KeyAdapter extends java.awt.event.KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
             if ((e.getKeyCode() == KeyEvent.VK_LEFT)&&(!moveTick)){
                 System.out.println("moving to the left");
-                turnPart('l');
+                moveHorizontal('l');
                 moveTick = true;
             }
             if ((e.getKeyCode() == KeyEvent.VK_RIGHT)&&(!moveTick)){
                 System.out.println("moving to the right");
-                turnPart('r');
+                moveHorizontal('r');
                 moveTick = true;
             }
             if (e.getKeyCode() == KeyEvent.VK_DOWN){
                 System.out.println("forcing down");
+                forceDown();
             }
             if (e.getKeyCode() == KeyEvent.VK_UP){
                 System.out.println("rotating 90 degrees");
