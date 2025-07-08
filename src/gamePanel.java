@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLOutput;
 import javax.swing.*;
 
 public class gamePanel extends JPanel implements ActionListener {
@@ -49,6 +50,36 @@ public class gamePanel extends JPanel implements ActionListener {
 //        newPart = part;
     }
 
+
+    //Turn all the curent movable parts into unmovable
+    public void turnMovingPart() {
+        for (int x = 0; x < map.length; x++){
+            for (int y = 0; y< map[0].length; y++){
+                if (map[x][y] == 2){
+                    map[x][y] = 1;
+                    newPart();
+                }
+            }
+        }
+    }
+
+
+    // Checks if there is anything under each part
+    public void collisionCheck() {
+        for (int y = map[0].length; y >= 0; y--){
+            for (int x = 0; x < map.length; x++){
+                if (y+1 < map[0].length){
+                    if (map[x][y] == 2) {
+                        if (map[x][y+1] == 1) {
+                            turnMovingPart();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void movePart() {
         for (int y = map[0].length; y >= 0; y--) {
             for (int x = 0; x < map.length; x++) {
@@ -77,7 +108,7 @@ public class gamePanel extends JPanel implements ActionListener {
                 for (int x = map.length - 1; x >= 0; x--) {
                     int movableBlocks = 0;
                     if ((map[x][y] == 2)&&(x + 1 + movableBlocks < map.length)) {
-                        System.out.println("on the right: "+map[x+1][y]);
+//                        System.out.println("on the right: "+map[x+1][y]);
                         if (map[x+1][y] == 0){
                             map[x+1][y] = 2;
                             map[x][y] = 0;
@@ -147,6 +178,7 @@ public class gamePanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(isRunning) {
             movePart();
+            collisionCheck();
             moveTick = false;
         }
         repaint();
