@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class gamePanel extends JPanel implements ActionListener {
-    static final int X_GRID = 10;
+    static final int X_GRID = 9;
     static final int Y_GRID = 20;
     static final int GRID_SIZE = 25;
     static final int WINDOW_HEIGHT = Y_GRID*GRID_SIZE;
@@ -16,6 +16,8 @@ public class gamePanel extends JPanel implements ActionListener {
     static int[][] map = new int[X_GRID][Y_GRID];
 
     boolean isRunning;
+    static boolean spawnTick = true;
+    static boolean cosmeticPoint;
     static boolean moveTick;
 
 
@@ -60,9 +62,11 @@ public class gamePanel extends JPanel implements ActionListener {
     public void turnMovingPart() {
         for (int x = 0; x < map.length; x++){
             for (int y = 0; y< map[0].length; y++){
-                if (map[x][y] == 2){
+                if (map[x][y] == 2&&spawnTick){
                     map[x][y] = 1;
                     newPart();
+                    spawnTick = true;
+                    System.out.println("3");
                 }
             }
         }
@@ -95,14 +99,18 @@ public class gamePanel extends JPanel implements ActionListener {
 
                         map[x][y+1] = map[x][y];
                         map[x][y] = 0;
-                    } else if((map[x][y] == 2)&&(map[x][y+1] == 1)) {
+                    } else if((map[x][y] == 2)&&(map[x][y+1] == 1)&&(spawnTick)) {
                         map[x][y] = 1;
                         newPart();
+                        spawnTick = true;
+                        System.out.println("2");
                     }
                 } else {
-                    if (map[x][y-1] == 2){
+                    if (map[x][y-1] == 2&&spawnTick){
                         map[x][y-1] = 1;
                         newPart();
+                        spawnTick = true;
+                        System.out.println("1");
                     }
                 }
             }
@@ -133,7 +141,6 @@ public class gamePanel extends JPanel implements ActionListener {
                 for (int x = 0; x < map.length; x++) {
                     int movableBlocks = 0;
                     if ((map[x][y] == 2)&&(x - 1 - movableBlocks >= 0)) {
-                        // ON THE SUBJECT OF BUGS... IT DUPLICATES
                         if (map[x-1][y] == 0){
                             map[x-1][y] = 2;
                             map[x][y] = 0;
@@ -151,6 +158,48 @@ public class gamePanel extends JPanel implements ActionListener {
     // forces down all blocks to the highest point
     static public void forceDown(){
         timer.setDelay(FORCE_DOWN_DELAY);
+    }
+
+    static public void cosmeticPointRow(int y){
+        for (int iy = map[0].length-1; iy >= 0; iy--){
+            for(int x = map.length-1; x >= 0; x--){
+                if (iy == y){
+                    map[x][iy] = 4;
+                }
+            }
+        }
+    }
+
+    static public void clearRow(int y){
+        for (int iy = map[0].length-1; iy >= 0; iy--){
+            for(int x = map.length-1; x >= 0; x--){
+                if (iy == y){
+                    map[x][iy] = 0;
+                }
+                if (iy < y){
+                    map[x][iy + 1] = map[x][iy];
+                }
+            }
+        }
+    }
+
+
+    static public void pointCheck(){
+
+        for (int y = 0; y < map[0].length; y++){
+            int yup = 0;
+            for (int x = 0; x < map.length; x++){
+                if (map[x][y] == 1){
+                    yup += 1;
+                }
+            }
+            if (yup == X_GRID){
+                cosmeticPoint = true;
+                cosmeticPointRow(y);
+                clearRow(y);
+                cosmeticPoint = false;
+            }
+        }
     }
 
 
@@ -177,6 +226,9 @@ public class gamePanel extends JPanel implements ActionListener {
                 } else if (map[x][y] == 2) {
                     g.setColor(Color.RED);
                     g.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                } else if (map[x][y] == 4){
+                    g.setColor(Color.WHITE);
+                    g.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
                 }
             }
         }
@@ -195,9 +247,11 @@ public class gamePanel extends JPanel implements ActionListener {
     //Game logic, overrides the default actionPerformed
     @Override
     public void actionPerformed(ActionEvent e){
-        if(isRunning) {
+        if(isRunning&&!cosmeticPoint) {
+
             movePart();
             collisionCheck();
+            pointCheck();
             moveTick = false;
         }
         repaint();
