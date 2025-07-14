@@ -29,5 +29,5 @@ bin/
 .DS_Store
 
 ### .idea ###
-/.idea
-/.idea/dictionaries
+.idea
+.idea/dictionaries

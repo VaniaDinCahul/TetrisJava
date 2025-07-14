@@ -1,34 +1,30 @@
+# 🎮 Tetris Clone -_-
 
-
-readme_content = """
-# 🎮 Tetris Clone in Java
-
-A custom-built Tetris clone written in Java using **Swing** for rendering and input handling. Built entirely from scratch as a learning project. 🙌
+uhhhhhhhhh, tetris using swing?
 
 ---
 
 ## 📦 Features
-- Smooth falling and horizontal movement
-- Row clearing and scoring system
-- Dynamic block coloring
-- Key input handling via `KeyAdapter`
-- Basic game loop with `Timer`
+- movment~
+- you actually gotta keep up a score
+- random colors ooo
+- Basic Tetris game lol
 
 ---
 
 ## 🎯 How to Play
 - **Arrow Keys** – Move blocks left/right
 - **Down Arrow** – Accelerate drop
-- **R / L** – Rotate (if implemented)
-- **Escape / P** – Pause (optional)
-- Game ends when blocks reach the top
+- **Up Arrow** – Rotation (not yet)
+- **P** – Pause
+- Game ends when blocks reach the top (it doesn't lol)
 
 ---
 
 ## 🛠️ Technologies
-- Java 17+ (developed with JDK 24)
-- Swing (for GUI and graphics)
-- Object-oriented structure using `Cell[][]` for the grid
+- Java 24
+- Swing
+- OOP
 
 ---
 
