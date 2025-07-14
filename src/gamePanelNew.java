@@ -217,28 +217,53 @@ public class gamePanelNew extends JPanel implements ActionListener {
             Dimension SCREEN_CENTER = new Dimension(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             setBackground(Color.BLACK);
 
+            for (int x = 0; x < SCREEN_WIDTH/GRID_SIZE; x++) {
+                for (int y = 0; y < SCREEN_HEIGHT; y++) {
+                    g.setColor(new Color(30, 31, 34));
+                    g.fillRect(x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE, GRID_SIZE);
+
+                    //Order is : 1. left, right, top
+                    Polygon topTriangle = new Polygon();
+                    Polygon bottomTriangle = new Polygon();
+
+                    bottomTriangle.addPoint((x*GRID_SIZE)+(GRID_SIZE/2), ((y+1)*GRID_SIZE));
+                    bottomTriangle.addPoint(((x+1)*GRID_SIZE),(y+1)*GRID_SIZE);
+                    bottomTriangle.addPoint(((x+1)*GRID_SIZE),y*GRID_SIZE+GRID_SIZE/2);
+
+                    topTriangle.addPoint(x*GRID_SIZE, y*GRID_SIZE);
+                    topTriangle.addPoint(x*GRID_SIZE+GRID_SIZE/2,y*GRID_SIZE) ;
+                    topTriangle.addPoint(x*GRID_SIZE, y*GRID_SIZE+GRID_SIZE/2);
+
+                    g.setColor(new Color(41, 42, 46));
+                    g.fillPolygon(topTriangle);
+
+                    g.setColor(new Color(23, 24, 27));
+                    g.fillPolygon(bottomTriangle);
+                }
+            }
+
             fm = g.getFontMetrics(MENU_FONT);
-            g.setColor(Color.BLUE);
+            g.setColor(new Color(220, 220, 220));
             g.setFont(MENU_FONT);
-            g.drawString("TETRIS",SCREEN_CENTER.width-(fm.stringWidth("TETRIS")/2),SCREEN_CENTER.height/2);
+            g.drawString("TETRIS",SCREEN_CENTER.width-(fm.stringWidth("TETRIS")/2),GRID_SIZE*4-fm.getAscent()/2);
 
             fm = g.getFontMetrics(SCORE_FONT);
-            g.setColor(Color.GRAY);
+            g.setColor(new Color(220, 220, 220));
             g.setFont(SCORE_FONT);
             g.drawString(
                     "Press",
                     SCREEN_CENTER.width-(fm.stringWidth(" SPACE ")/2)-(fm.stringWidth("Press")),
-                    SCREEN_CENTER.height);
-            g.setColor(Color.RED);
+                    GRID_SIZE*10-fm.getAscent()/2);
+            g.setColor(new Color(159, 62, 62));
             g.drawString(
                     " SPACE ",
                     SCREEN_CENTER.width-(fm.stringWidth(" SPACE ")/2),
-                    SCREEN_CENTER.height);
-            g.setColor(Color.GRAY);
+                    GRID_SIZE*10-fm.getAscent()/2);
+            g.setColor(new Color(220, 220, 220));
             g.drawString(
                     "to Play",
                     SCREEN_CENTER.width+(fm.stringWidth(" SPACE ")/2),
-                    SCREEN_CENTER.height);
+                    GRID_SIZE*10-fm.getAscent()/2);
         }
 
         // If the game is running

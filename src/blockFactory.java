@@ -15,7 +15,8 @@ public class blockFactory {
             "j",
             "l",
             "s",
-            "z"
+            "z",
+            "t"
     };
 
     List<String> shapeBag = new ArrayList<>(Arrays.asList(SHAPES));
@@ -93,6 +94,13 @@ public class blockFactory {
             newBlock[1][0].v = 2;
             newBlock[1][1].v = 2;
             newBlock[2][1].v = 2;
+        }
+
+        if (shape.equals("t")){
+            newBlock[0][0].v = 2;
+            newBlock[1][0].v = 2;
+            newBlock[2][0].v = 2;
+            newBlock[1][1].v = 2;
         }
 
         return newBlock;
